@@ -109,21 +109,23 @@ export type FeaturedProps = {
 	movies: Array<MovieT>;
 };
 
+export type CastT = {
+	id: number;
+	cast_id: number;
+	adult: boolean;
+	character: string;
+	credit_id: string;
+	gender: "Male" | "Female";
+	name: string;
+	original_name: string;
+	popularity: Number;
+	profile_path: string;
+	order: number;
+};
+
 export type CreditT = {
 	id: number;
-	cast: Array<{
-		id: number;
-		cast_id: number;
-		adult: boolean;
-		character: string;
-		credit_id: string;
-		gender: "Male" | "Female";
-		name: string;
-		original_name: string;
-		popularity: Number;
-		profile_path: string;
-		order: number;
-	}>;
+	cast: Array<CastT>;
 	crew: [];
 };
 

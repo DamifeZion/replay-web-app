@@ -1,6 +1,6 @@
 export const routeConst = {
-	home: "/",
-	movieDetails: "/:id",
+	home: "/home",
+	movieDetails: "/home/:id",
 	seeMoreMovies: "/more/:encrypted_endpoint",
 	discover: "/discover",
 	movieRelease: "/movie-release",

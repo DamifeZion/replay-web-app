@@ -1,13 +1,23 @@
 <script lang="ts" setup>
+import CastCard from "@/components/CastCard.vue";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
+import {
+	Carousel,
+	CarouselContent,
+	CarouselItem,
+	CarouselNext,
+	CarouselPrevious,
+} from "@/components/ui/carousel";
 import { useMovieDetails } from "@/composables/shared/use-movie-details";
 import { getImageUrl } from "@/helper/tmdb-image";
+import { useMediaQuery } from "@vueuse/core";
 import { Download, Share2 } from "lucide-vue-next";
 import moment from "moment";
 import { computed } from "vue";
 
 const { detailsState } = useMovieDetails();
+const isDesktop = useMediaQuery("(min-width: 1024px)");
 
 const video = computed(() => detailsState.data?.movie);
 const credit = computed(() => detailsState.data?.credit);
@@ -75,7 +85,7 @@ const credit = computed(() => detailsState.data?.credit);
 		</section>
 
 		<section
-			class="container grid gap-4 [&_h5]:text-lg [&_h5]:font-medium [&_h5]:leading-[2.5] [&_p]:text-muted-foreground"
+			class="container grid gap-4 [&_h5]:text-xl [&_h5]:font-semibold [&_h5]:leading-[2.5] [&_p]:text-muted-foreground"
 		>
 			<!-- Overview -->
 			<div>
@@ -88,9 +98,20 @@ const credit = computed(() => detailsState.data?.credit);
 			<!-- Cast -->
 			<div>
 				<h5>Top Cast</h5>
-				<p>
-					{{ video?.overview }}
-				</p>
+
+				<Carousel v-slot="{ canScrollNext, canScrollPrev }" class="grid">
+					<CarouselContent>
+						<CarouselItem
+							v-for="cast in credit?.cast"
+							class="pl-10 basis-auto first:pl-4"
+						>
+							<CastCard :cast="cast" />
+						</CarouselItem>
+					</CarouselContent>
+
+					<CarouselPrevious v-if="isDesktop && canScrollPrev" />
+					<CarouselNext v-if="isDesktop && canScrollNext" />
+				</Carousel>
 			</div>
 		</section>
 	</main>
