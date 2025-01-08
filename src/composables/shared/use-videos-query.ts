@@ -233,6 +233,7 @@ export const useVideoQuery = () => {
 		}
 	};
 
+
 	return {
 		trendingState,
 		getTrendingVideos,

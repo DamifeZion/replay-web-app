@@ -9,4 +9,7 @@ export const ENDPOINT = {
 	GET_VIDEO: "/movie/:movie_id/videos",
 	GET_UPCOMING_MOVIES: "/movie/upcoming",
 	GET_TV_SERIES: "/discover/tv",
+	GET_VIDEO_DETAILS: "/movie/:movie_id",
+	GET_MOVIE_CREDITS: "/movie/:movie_id/credits",
+	GET_GENDER: ""
 };

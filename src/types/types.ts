@@ -108,3 +108,33 @@ export type FeaturedProps = {
 	isLoading: boolean;
 	movies: Array<MovieT>;
 };
+
+export type CreditT = {
+	id: number;
+	cast: Array<{
+		id: number;
+		cast_id: number;
+		adult: boolean;
+		character: string;
+		credit_id: string;
+		gender: "Male" | "Female";
+		name: string;
+		original_name: string;
+		popularity: Number;
+		profile_path: string;
+		order: number;
+	}>;
+	crew: [];
+};
+
+export type MovieDetailsFetchState = Omit<AxiosFetchState, "data"> & {
+	data?: {
+		movie: Omit<MovieT, "genre_ids"> & {
+			genres: Array<{
+				id: number;
+				name: string;
+			}>;
+		};
+		credit: CreditT;
+	};
+};

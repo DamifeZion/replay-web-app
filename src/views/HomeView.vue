@@ -59,7 +59,7 @@ const {
 		<HorizontalCarousel
 			video-type="tv"
 			show-more
-			class="pt-0"
+			class="py-0"
 			:show-more-endpoint="ENDPOINT.GET_TV_SERIES"
 			head-title="TV Series"
 			card-presentation="LandscapeMovieCard"
