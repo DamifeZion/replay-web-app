@@ -1,6 +1,10 @@
 import { ENDPOINT } from "@/constants/endpoint-const";
 import { axios } from "@/plugins/axios";
-import type { CreditT, MovieDetailsFetchState } from "@/types/types";
+import type {
+	AxiosFetchState,
+	CreditT,
+	MovieDetailsFetchState,
+} from "@/types/types";
 import { onMounted, reactive } from "vue";
 import { useRoute } from "vue-router";
 
@@ -15,6 +19,9 @@ export const useMovieDetails = () => {
 
 	const getMovieDetails = async () => {
 		try {
+			detailsState.isLoading = true;
+			detailsState.error = "";
+
 			const [videoDetails, credits] = await Promise.all([
 				axios.get(
 					ENDPOINT.GET_VIDEO_DETAILS.replace(
@@ -54,22 +61,38 @@ export const useMovieDetails = () => {
 			detailsState.isLoading = false;
 		}
 	};
-	onMounted(() => getMovieDetails());
+
+	const recommendedState = reactive<AxiosFetchState>({
+		data: [],
+		error: "",
+		isLoading: false,
+	});
+	const getRecommendedMovies = async () => {
+		try {
+			recommendedState.isLoading = false;
+			recommendedState.error = "";
+
+			const res = await axios.get(
+				ENDPOINT.GET_RECOMMENDED_MOVIE.replace(
+					":movie_id",
+					String(route.params.id),
+				),
+			);
+
+			console.log(res.data);
+		} catch (err) {
+		} finally {
+			recommendedState.isLoading = false;
+		}
+	};
+
+	onMounted(() => {
+		getMovieDetails();
+		getRecommendedMovies();
+	});
 
 	return {
 		detailsState,
+		recommendedState
 	};
 };
-
-adult: false;
-cast_id: 143;
-character: "Ellen Hutter";
-credit_id: "675ab27f661e8dd41d996f10";
-gender: 1;
-id: 1459885;
-known_for_department: "Acting";
-name: "Lily-Rose Depp";
-order: 0;
-original_name: "Lily-Rose Depp";
-popularity: 67.388;
-profile_path: "/kWSRS0M5uv0KlFJUvH6Rqm2g70B.jpg";

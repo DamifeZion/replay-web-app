@@ -1,4 +1,5 @@
 <script lang="ts" setup>
+import HorizontalCarousel from "@/components/carousel/HorizontalCarousel.vue";
 import CastCard from "@/components/CastCard.vue";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
@@ -29,7 +30,7 @@ const credit = computed(() => detailsState.data?.credit);
 			v-if="!detailsState.isLoading"
 			class="relative aspect-video flex items-end w-full pt-40 pb-10 min-[460px]:pb-24 lg:py-20 lg:max-h-[720px]"
 		>
-			<!-- Background Image -->
+			<!-- Hero Background Image -->
 			<div
 				:style="{
 					backgroundImage: `linear-gradient(to bottom, rgba(12, 10, 9, 0) 40%, rgba(12, 10, 9, 1) 100%), url(${video ? getImageUrl(video.backdrop_path || video?.poster_path, 'w1280') : ''})`,
@@ -37,7 +38,7 @@ const credit = computed(() => detailsState.data?.credit);
 				class="absolute inset-0 bg-center bg-cover size-full z-[-1]"
 			/>
 
-			<!-- Content Overlay -->
+			<!-- Hero Content Overlay -->
 			<div class="container select-none">
 				<Badge> Movie </Badge>
 
@@ -84,6 +85,7 @@ const credit = computed(() => detailsState.data?.credit);
 			</div>
 		</section>
 
+		<!-- Content  -->
 		<section
 			class="container grid gap-4 [&_h5]:text-xl [&_h5]:font-semibold [&_h5]:leading-[2.5] [&_p]:text-muted-foreground"
 		>
@@ -113,6 +115,16 @@ const credit = computed(() => detailsState.data?.credit);
 					<CarouselNext v-if="isDesktop && canScrollNext" />
 				</Carousel>
 			</div>
+
+			<!-- Recommended -->
+			<HorizontalCarousel
+				show-more
+				:show-more-endpoint=""
+				head-title="Similar Movies For You"
+				card-presentation="LandscapeMovieCard"
+				:data=""
+				:is-loading=""
+			/>
 		</section>
 	</main>
 </template>

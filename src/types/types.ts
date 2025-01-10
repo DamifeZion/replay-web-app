@@ -98,6 +98,7 @@ export type MovieCardProps = {
 	movie: MovieT;
 	videoType: GenreTypeT;
 	class?: string;
+	isLoading?: boolean;
 };
 
 export type GenreTypeT = "movie" | "tv";

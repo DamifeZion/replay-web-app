@@ -62,18 +62,21 @@ const seeMoreURL = routeConst.seeMoreMovies.replace(
 						:index="index"
 						:video-type="videoType"
 						:movie="item as MovieT"
+						:is-loading="props.isLoading"
 					/>
 					<LandscapeMovieCard
 						v-if="props.cardPresentation === 'LandscapeMovieCard'"
 						:index="index"
 						:video-type="videoType"
 						:movie="item as MovieT"
+						:is-loading="props.isLoading"
 					/>
 					<LeaderboardMovieCard
 						v-if="props.cardPresentation === 'LeaderboardMovieCard'"
 						:index="index"
 						:video-type="videoType"
 						:movie="item as MovieT"
+						:is-loading="props.isLoading"
 					/>
 				</CarouselItem>
 			</CarouselContent>

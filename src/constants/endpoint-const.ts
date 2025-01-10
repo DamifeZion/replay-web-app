@@ -11,5 +11,5 @@ export const ENDPOINT = {
 	GET_TV_SERIES: "/discover/tv",
 	GET_VIDEO_DETAILS: "/movie/:movie_id",
 	GET_MOVIE_CREDITS: "/movie/:movie_id/credits",
-	GET_GENDER: ""
+	GET_RECOMMENDED_MOVIE: "/movie/:movie_id/recommendations"
 };

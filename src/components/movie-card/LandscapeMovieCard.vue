@@ -7,6 +7,7 @@ import { Card, CardContent } from "../ui/card";
 import { RouterLink } from "vue-router";
 import { routeConst } from "@/constants/route-const";
 import CardHeader from "../ui/card/CardHeader.vue";
+import { Skeleton } from "../ui/skeleton";
 
 const props = withDefaults(defineProps<MovieCardProps>(), {
 	movie: () =>
@@ -34,14 +35,18 @@ const { renderGenre } = useRenderGenre();
 	<RouterLink
 		:to="routeConst.movieDetails.replace(':id', String(props.movie.id))"
 	>
-		<Card class="bg-transparent border-none">
+		<Skeleton
+			v-if="props.isLoading"
+			class="aspect-[1/0.7] rounded-3xl"
+		/>
+
+		<Card v-else class="bg-transparent border-none">
 			<CardHeader
 				:style="{
 					backgroundImage: `linear-gradient(to bottom, rgba(0,0,0,0.1) 60%, rgba(0,0,0,1) 100%), url(${getImageUrl(movieProps?.poster_path)})`,
 				}"
 				class="bg-bottom bg-cover border select-none aspect-[1/0.7] rounded-3xl"
-			>
-			</CardHeader>
+			/>
 
 			<CardContent
 				:class="

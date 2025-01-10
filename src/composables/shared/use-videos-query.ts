@@ -76,8 +76,6 @@ export const useVideoQuery = () => {
 					// primary_release_date_lte: "2024-12-31",
 				},
 			});
-
-			console.log("New Releases", res.data);
 			newReleaseState.data = res.data;
 		} catch (err) {
 			console.error(err);
@@ -211,20 +209,6 @@ export const useVideoQuery = () => {
 					}),
 				),
 			};
-
-			console.log(
-				res.data,
-				(tvSeriesState.data = {
-					...res.data,
-					results: res.data?.results.map(
-						(item: any): MovieT => ({
-							...item,
-							title: item?.name,
-							original_title: item?.original_name,
-						}),
-					),
-				}),
-			);
 		} catch (err) {
 			console.error(err);
 			tvSeriesState.error = err;
