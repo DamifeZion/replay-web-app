@@ -40,7 +40,7 @@ const { renderGenre } = useRenderGenre();
 			class="aspect-[1/0.7] rounded-3xl"
 		/>
 
-		<Card v-else class="bg-transparent border-none">
+		<Card v-else class="bg-transparent border-none select-none">
 			<CardHeader
 				:style="{
 					backgroundImage: `linear-gradient(to bottom, rgba(0,0,0,0.1) 60%, rgba(0,0,0,1) 100%), url(${getImageUrl(movieProps?.poster_path)})`,

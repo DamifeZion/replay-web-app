@@ -1,6 +1,7 @@
 <script lang="ts" setup>
 import HorizontalCarousel from "@/components/carousel/HorizontalCarousel.vue";
 import CastCard from "@/components/CastCard.vue";
+import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import {
@@ -11,17 +12,21 @@ import {
 	CarouselPrevious,
 } from "@/components/ui/carousel";
 import { useMovieDetails } from "@/composables/shared/use-movie-details";
+import { ENDPOINT } from "@/constants/endpoint-const";
 import { getImageUrl } from "@/helper/tmdb-image";
+import type { ReviewT } from "@/types/types";
 import { useMediaQuery } from "@vueuse/core";
 import { Download, Share2 } from "lucide-vue-next";
 import moment from "moment";
 import { computed } from "vue";
 
-const { detailsState } = useMovieDetails();
+const { detailsState, recommendedState, movieId, reviewsState } =
+	useMovieDetails();
 const isDesktop = useMediaQuery("(min-width: 1024px)");
 
 const video = computed(() => detailsState.data?.movie);
 const credit = computed(() => detailsState.data?.credit);
+// const recommendation = computed(() => )
 </script>
 
 <template>
@@ -87,7 +92,7 @@ const credit = computed(() => detailsState.data?.credit);
 
 		<!-- Content  -->
 		<section
-			class="container grid gap-4 [&_h5]:text-xl [&_h5]:font-semibold [&_h5]:leading-[2.5] [&_p]:text-muted-foreground"
+			class="container grid gap-10 [&_h5]:text-xl [&_h5]:font-semibold [&_h5]:leading-[2.5] [&_p]:text-muted-foreground"
 		>
 			<!-- Overview -->
 			<div>
@@ -116,15 +121,70 @@ const credit = computed(() => detailsState.data?.credit);
 				</Carousel>
 			</div>
 
-			<!-- Recommended -->
+			<!-- Reviews -->
+			<div>
+				<div class="flex items-center justify-between gap-4">
+					<h5>⭐Reviews</h5>
+				</div>
+
+				<Carousel v-slot="{ canScrollNext, canScrollPrev }" class="grid mt-3">
+					<CarouselContent>
+						<CarouselItem
+							v-for="item in reviewsState.data
+								?.results as Array<ReviewT>"
+							class="flex flex-col gap-4 select-none"
+						>
+							<ul class="flex items-center gap-2 list-inside">
+								<li>
+									<Avatar>
+										<AvatarImage
+											:src="
+												getImageUrl(item.author_details.avatar_path)
+											"
+										/>
+										<AvatarFallback class="font-semibold uppercase">
+											{{ item.author.slice(0, 2) }}
+										</AvatarFallback>
+									</Avatar>
+								</li>
+
+								<li>
+									{{ item.author }}
+								</li>
+
+								<li class="text-xs list-disc text-muted-foreground">
+									{{ moment(item.created_at).fromNow() }}
+								</li>
+							</ul>
+							
+							<p class="text-sm">
+								{{ item.content }}
+							</p>
+						</CarouselItem>
+					</CarouselContent>
+
+					<CarouselPrevious v-if="isDesktop && canScrollPrev" />
+					<CarouselNext v-if="isDesktop && canScrollNext" />
+				</Carousel>
+			</div>
+		</section>
+
+		<!-- Recommended -->
+		<div class="mt-12 border-t">
 			<HorizontalCarousel
 				show-more
-				:show-more-endpoint=""
+				class="pt-12 pb-0"
+				:show-more-endpoint="
+					ENDPOINT.GET_RECOMMENDED_MOVIE.replace(
+						':movie_id',
+						String(movieId),
+					)
+				"
 				head-title="Similar Movies For You"
 				card-presentation="LandscapeMovieCard"
-				:data=""
-				:is-loading=""
+				:data="recommendedState.data"
+				:is-loading="recommendedState.isLoading"
 			/>
-		</section>
+		</div>
 	</main>
 </template>

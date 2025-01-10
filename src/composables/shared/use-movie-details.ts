@@ -5,11 +5,12 @@ import type {
 	CreditT,
 	MovieDetailsFetchState,
 } from "@/types/types";
-import { onMounted, reactive } from "vue";
+import { watch, reactive, computed } from "vue";
 import { useRoute } from "vue-router";
 
 export const useMovieDetails = () => {
 	const route = useRoute();
+	const movieId = computed(() => route.params.id);
 
 	const detailsState = reactive<MovieDetailsFetchState>({
 		data: undefined,
@@ -26,13 +27,13 @@ export const useMovieDetails = () => {
 				axios.get(
 					ENDPOINT.GET_VIDEO_DETAILS.replace(
 						":movie_id",
-						String(route.params.id),
+						String(movieId.value),
 					),
 				),
 				axios.get(
 					ENDPOINT.GET_MOVIE_CREDITS.replace(
 						":movie_id",
-						String(route.params.id),
+						String(movieId.value),
 					),
 				),
 			]);
@@ -75,24 +76,57 @@ export const useMovieDetails = () => {
 			const res = await axios.get(
 				ENDPOINT.GET_RECOMMENDED_MOVIE.replace(
 					":movie_id",
-					String(route.params.id),
+					String(movieId.value),
 				),
 			);
 
-			console.log(res.data);
+			recommendedState.data = res.data;
 		} catch (err) {
 		} finally {
 			recommendedState.isLoading = false;
 		}
 	};
 
-	onMounted(() => {
-		getMovieDetails();
-		getRecommendedMovies();
+	const reviewsState = reactive<AxiosFetchState>({
+		data: [],
+		error: "",
+		isLoading: false,
 	});
+	const getReviews = async () => {
+		try {
+			reviewsState.isLoading = false;
+			reviewsState.error = "";
+
+			const res = await axios.get(
+				ENDPOINT.GET_MOVIE_REVIEWS.replace(
+					":movie_id",
+					String(movieId.value),
+				),
+			);
+
+			reviewsState.data = res.data;
+		} catch (err) {
+		} finally {
+			reviewsState.isLoading = false;
+		}
+	};
+
+	watch(
+		() => route.params.id,
+		(newMovieId, oldMovieId) => {
+			if (newMovieId !== oldMovieId) {
+				getMovieDetails();
+				getRecommendedMovies();
+				getReviews();
+			}
+		},
+		{ immediate: true },
+	);
 
 	return {
 		detailsState,
-		recommendedState
+		recommendedState,
+		movieId,
+		reviewsState
 	};
 };
