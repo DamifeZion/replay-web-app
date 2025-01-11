@@ -26,7 +26,7 @@ const urlToken = {
 	pageTitle: props.headTitle,
 	videoType,
 };
-const seeMoreURL = routeConst.seeMoreMovies.replace(
+const seeMoreURL = routeConst.seeMoreVideos.replace(
 	":encrypted_endpoint",
 	window.btoa(JSON.stringify(urlToken)),
 );

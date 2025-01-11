@@ -3,9 +3,6 @@ import { RouterView } from "vue-router";
 import Navbar from "./components/navbar/Navbar.vue";
 import { TooltipProvider } from "./components/ui/tooltip";
 import Footer from "./components/footer/Footer.vue";
-import { useScrollToTop } from "./composables/use-scroll-to-top";
-
-useScrollToTop();
 </script>
 
 <template>

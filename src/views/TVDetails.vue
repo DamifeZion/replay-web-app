@@ -36,7 +36,7 @@ const {
 	toggleMaxShownReviews,
 } = useMovieDetails();
 
-const video = computed(() => detailsState.data?.movie);
+const tv = computed(() => detailsState.data?.movie);
 const credit = computed(() => detailsState.data?.credit);
 </script>
 
@@ -54,7 +54,7 @@ const credit = computed(() => detailsState.data?.credit);
 			<!-- Hero Background Image -->
 			<div
 				:style="{
-					backgroundImage: `linear-gradient(to bottom, rgba(12, 10, 9, 0) 40%, rgba(12, 10, 9, 1) 100%), url(${video ? getImageUrl(video.backdrop_path || video?.poster_path, 'w1280') : ''})`,
+					backgroundImage: `linear-gradient(to bottom, rgba(12, 10, 9, 0) 40%, rgba(12, 10, 9, 1) 100%), url(${tv ? getImageUrl(tv.backdrop_path || tv?.poster_path, 'w1280') : ''})`,
 				}"
 				class="absolute inset-0 bg-center bg-cover size-full z-[-1]"
 			/>
@@ -64,16 +64,16 @@ const credit = computed(() => detailsState.data?.credit);
 				<Badge> Movie </Badge>
 
 				<h2 class="max-w-lg mt-6 text-4xl font-semibold lg:text-5xl">
-					{{ video?.title }}
+					{{ tv?.title }}
 				</h2>
 
 				<ul
 					class="max-w-lg mt-2 flex flex-wrap items-center text-muted-foreground gap-1.5 list-disc font-medium list-inside"
 				>
 					<li class="list-none">
-						{{ moment(video?.release_date).format("YYYY") }}
+						{{ moment(tv?.release_date).format("YYYY") }}
 					</li>
-					<li v-for="genre in video?.genres" :key="genre.id">
+					<li v-for="genre in tv?.genres" :key="genre.id">
 						{{ genre.name }}
 					</li>
 				</ul>
@@ -114,7 +114,7 @@ const credit = computed(() => detailsState.data?.credit);
 			<div>
 				<h5>Story Line</h5>
 				<p>
-					{{ video?.overview }}
+					{{ tv?.overview }}
 				</p>
 			</div>
 

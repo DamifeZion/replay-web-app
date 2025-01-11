@@ -37,7 +37,7 @@ const { renderGenre } = useRenderGenre();
 	>
 		<Skeleton
 			v-if="props.isLoading"
-			class="aspect-[1/0.7] rounded-3xl"
+			class="aspect-[1/0.7] rounded-lg sm:rounded-3xl"
 		/>
 
 		<Card v-else class="bg-transparent border-none select-none">
@@ -45,7 +45,7 @@ const { renderGenre } = useRenderGenre();
 				:style="{
 					backgroundImage: `linear-gradient(to bottom, rgba(0,0,0,0.1) 60%, rgba(0,0,0,1) 100%), url(${getImageUrl(movieProps?.poster_path)})`,
 				}"
-				class="bg-bottom bg-cover border select-none aspect-[1/0.7] rounded-3xl"
+				class="bg-bottom bg-cover border select-none aspect-[1/0.7] rounded-xl sm:rounded-2xl"
 			/>
 
 			<CardContent

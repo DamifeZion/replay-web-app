@@ -143,7 +143,8 @@ export type ReviewT = {
 	id: string;
 	updated_at: string;
 	url: string;
-}
+	showFullContent: boolean;
+};
 
 export type MovieDetailsFetchState = Omit<AxiosFetchState, "data"> & {
 	data?: {

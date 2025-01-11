@@ -1,7 +1,8 @@
 export const routeConst = {
 	home: "/home",
-	movieDetails: "/home/:id",
-	seeMoreMovies: "/more/:encrypted_endpoint",
+	movieDetails: "/home/movie/:id",
+	tvDetails: "/home/tv/:id",
+	seeMoreVideos: "/more/:encrypted_endpoint",
 	discover: "/discover",
 	movieRelease: "/movie-release",
 	forum: "/forum",

@@ -4,11 +4,14 @@ import type {
 	AxiosFetchState,
 	CreditT,
 	MovieDetailsFetchState,
+	ReviewT,
 } from "@/types/types";
-import { watch, reactive, computed } from "vue";
+import { useMediaQuery } from "@vueuse/core";
+import { watch, reactive, computed, ref } from "vue";
 import { useRoute } from "vue-router";
 
 export const useMovieDetails = () => {
+	const isDesktop = useMediaQuery("(min-width: 1024px)");
 	const route = useRoute();
 	const movieId = computed(() => route.params.id);
 
@@ -123,10 +126,47 @@ export const useMovieDetails = () => {
 		{ immediate: true },
 	);
 
+	// Add `showFullContent` to each review item
+	const reviewContentLength: number = isDesktop ? 600 : 300;
+	reviewsState.data.results?.map((item: ReviewT) => ({
+		...item,
+		showFullContent: false,
+	}));
+
+	// Toggle show more/less for a specific review
+	const toggleShowMore = (index: number) => {
+		reviewsState.data.results[index].showFullContent =
+			!reviewsState.data.results[index].showFullContent;
+	};
+
+	const maxShownReviews = ref(3);
+	const toggleMaxShownReviews = () => {
+		let value: number = 3;
+		const reviewLength = reviewsState.data?.results.length;
+
+		switch (maxShownReviews.value) {
+			case 3:
+				value = reviewLength;
+				break;
+			default:
+				value = 3;
+		}
+
+		maxShownReviews.value = value;
+	};
+
 	return {
+		// API Data
 		detailsState,
 		recommendedState,
+		reviewsState,
+
+		//Others
 		movieId,
-		reviewsState
+		isDesktop,
+		reviewContentLength,
+		toggleShowMore,
+		maxShownReviews,
+		toggleMaxShownReviews,
 	};
 };
