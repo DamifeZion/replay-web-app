@@ -2,19 +2,23 @@
 import PortraitMovieCard from "@/components/movie-card/PortraitMovieCard.vue";
 import { Button } from "@/components/ui/button";
 import { axios } from "@/plugins/axios";
+import { useSeeMoreStore } from "@/stores/see-more.store";
 import type { AxiosFetchState, MovieT } from "@/types/types";
 import { ChevronLeft, Loader, Loader2 } from "lucide-vue-next";
-import { onMounted, onUnmounted, reactive } from "vue";
+import { computed, onMounted, onUnmounted, reactive } from "vue";
 import { useRoute, useRouter } from "vue-router";
 
+const seeMoreStore = useSeeMoreStore();
 const route = useRoute();
 const router = useRouter();
 const decodedRoute = JSON.parse(
 	window.atob(String(route.params.encrypted_endpoint)),
 );
-const endpoint = decodedRoute.endpoint;
-const pageTitle = decodedRoute.pageTitle;
-const videoType = decodedRoute.videoType;
+const endpoint = computed(() => decodedRoute.endpoint);
+const pageTitle = seeMoreStore.title
+	? `Similar to ${seeMoreStore.title}`
+	: computed(() => decodedRoute.pageTitle);
+const videoType = computed(() => decodedRoute.videoType);
 
 const movies = reactive<AxiosFetchState>({
 	data: {
@@ -37,7 +41,7 @@ const fetchMovies = async () => {
 		movies.isLoading = true;
 		movies.error = "";
 
-		const res = await axios.get(endpoint, {
+		const res = await axios.get(endpoint.value, {
 			params: {
 				page: movies.data.page + 1,
 			},
@@ -50,8 +54,8 @@ const fetchMovies = async () => {
 			...(res.data.results.map(
 				(item: any): MovieT => ({
 					...item,
-					title: item?.name,
-					original_title: item?.original_name,
+					title: item?.name || item?.title,
+					original_title: item?.original_name || item?.original_title,
 				}),
 			) || []),
 		];

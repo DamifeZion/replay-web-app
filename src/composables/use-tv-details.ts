@@ -1,10 +1,11 @@
 import { ENDPOINT } from "@/constants/endpoint-const";
 import { axios } from "@/plugins/axios";
+import { useSeeMoreStore } from "@/stores/see-more.store";
 import type {
 	AxiosFetchState,
-	CreditT,
-	MovieDetailsFetchState,
+	MovieT,
 	ReviewT,
+	TvDetailsFetchState,
 } from "@/types/types";
 import { useMediaQuery } from "@vueuse/core";
 import { watch, reactive, computed, ref } from "vue";
@@ -12,10 +13,11 @@ import { useRoute } from "vue-router";
 
 export const useTvDetails = () => {
 	const isDesktop = useMediaQuery("(min-width: 1024px)");
+	const seeMoreStore = useSeeMoreStore();
 	const route = useRoute();
 	const movieId = computed(() => route.params.id);
 
-	const detailsState = reactive<MovieDetailsFetchState>({
+	const detailsState = reactive<TvDetailsFetchState>({
 		data: undefined,
 		error: "",
 		isLoading: false,
@@ -42,7 +44,7 @@ export const useTvDetails = () => {
 			]);
 
 			detailsState.data = {
-				movie: videoDetails.data,
+				tv: videoDetails.data,
 				credit: {
 					...credits.data,
 					cast: credits.data?.cast.map((item: any) => ({
@@ -66,6 +68,15 @@ export const useTvDetails = () => {
 		}
 	};
 
+	// Persist the Video Title to use in See More
+	watch(detailsState, (newVal) => {
+		if (newVal) {
+			seeMoreStore.setTitle(
+				String(newVal.data?.tv.name || newVal.data?.tv.origin_name),
+			);
+		}
+	});
+
 	const recommendedState = reactive<AxiosFetchState>({
 		data: [],
 		error: "",
@@ -84,6 +95,14 @@ export const useTvDetails = () => {
 			);
 
 			recommendedState.data = res.data;
+			recommendedState.data.results =
+				res.data.results.map(
+					(item: any): MovieT => ({
+						...item,
+						title: item?.name,
+						original_title: item?.original_name,
+					}),
+				) || [];
 		} catch (err) {
 		} finally {
 			recommendedState.isLoading = false;

@@ -2,7 +2,6 @@ import { ENDPOINT } from "@/constants/endpoint-const";
 import { axios } from "@/plugins/axios";
 import type {
 	AxiosFetchState,
-	CreditT,
 	MovieDetailsFetchState,
 	ReviewT,
 } from "@/types/types";

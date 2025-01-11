@@ -5,6 +5,12 @@ import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import {
+	Card,
+	CardDescription,
+	CardHeader,
+	CardTitle,
+} from "@/components/ui/card";
+import {
 	Carousel,
 	CarouselContent,
 	CarouselItem,
@@ -36,7 +42,7 @@ const {
 	toggleMaxShownReviews,
 } = useTvDetails();
 
-const tv = computed(() => detailsState.data?.movie);
+const tv = computed(() => detailsState.data?.tv);
 const credit = computed(() => detailsState.data?.credit);
 </script>
 
@@ -64,15 +70,16 @@ const credit = computed(() => detailsState.data?.credit);
 				<Badge> TV Show </Badge>
 
 				<h2 class="max-w-lg mt-6 text-4xl font-semibold lg:text-5xl">
-					{{ tv?.title }}
+					{{ tv?.name || tv?.origin_name }}
 				</h2>
 
 				<ul
 					class="max-w-lg mt-2 flex flex-wrap items-center text-muted-foreground gap-1.5 list-disc font-medium list-inside"
 				>
 					<li class="list-none">
-						{{ moment(tv?.release_date).format("YYYY") }}
+						{{ moment(tv?.first_air_date).format("YYYY") }}
 					</li>
+
 					<li v-for="genre in tv?.genres" :key="genre.id">
 						{{ genre.name }}
 					</li>
@@ -111,7 +118,7 @@ const credit = computed(() => detailsState.data?.credit);
 			class="container grid gap-10 [&_h5]:text-xl [&_h5]:font-semibold [&_h5]:leading-[2.5] [&_p]:text-muted-foreground"
 		>
 			<!-- Overview -->
-			<div>
+			<div v-if="tv?.overview">
 				<h5>Story Line</h5>
 				<p>
 					{{ tv?.overview }}
@@ -119,8 +126,8 @@ const credit = computed(() => detailsState.data?.credit);
 			</div>
 
 			<!-- Cast -->
-			<div>
-				<h5>Top Cast</h5>
+			<div v-if="credit?.cast.length">
+				<h5>Series Cast</h5>
 
 				<Carousel v-slot="{ canScrollNext, canScrollPrev }" class="grid">
 					<CarouselContent>
@@ -138,84 +145,146 @@ const credit = computed(() => detailsState.data?.credit);
 			</div>
 		</section>
 
+		<!-- Seassons  -->
+		<section v-if="tv?.seasons.length" class="pt-8 mt-10 mb-16 border-t">
+			<div class="container">
+				<div class="flex flex-wrap items-center gap-4">
+					<h5 class="text-xl font-semibold">
+						Seasons ({{ tv?.seasons.length }})
+					</h5>
+
+					<Badge>
+						{{ tv.status }}
+					</Badge>
+				</div>
+
+				<ul class="grid gap-6 mt-6 list-inside lg:grid-cols-2">
+					<li v-for="item in tv?.seasons" :key="item.id">
+						<Card class="flex h-full max-[499px]:flex-wrap gap-x-">
+							<img
+								:src="getImageUrl(item.poster_path)"
+								class="flex-grow aspect-video min-[500px]:aspect-[11/16] min-[500px]:max-w-[150px] object-cover object-center rounded-[inherit]"
+							/>
+
+							<CardHeader class="gap-3">
+								<CardTitle>
+									{{ item.name }}
+								</CardTitle>
+
+								<ul
+									class="flex items-center gap-2 text-muted-foreground list-inside [&:nth-child(2)]:list-disc"
+								>
+									<li class="inline-flex items-center gap-1">
+										<i class="pi pi-star-fill text-gold"></i>
+										{{ item?.vote_average.toFixed(1) }}
+									</li>
+
+									<li>
+										{{ moment(item.air_date).format("YYYY") }}
+									</li>
+
+									<li>{{ item.episode_count }} Episodes</li>
+								</ul>
+
+								<CardDescription v-if="item.overview">
+									{{ item.overview }}
+								</CardDescription>
+
+								<p class="text-sm text-muted-foreground">
+									({{ item.season_number }}x{{ item.episode_count }}
+									{{ moment(item.air_date).format("MMMM, DD, YYYY") }})
+								</p>
+							</CardHeader>
+						</Card>
+					</li>
+				</ul>
+			</div>
+		</section>
+
 		<!-- Reviews -->
 		<section
 			v-if="
 				reviewsState.data.results && reviewsState.data.results.length > 0
 			"
-			class="container mt-8"
+			class="pt-8 mt-10 border-t"
 		>
-			<div class="flex items-center justify-between gap-4">
+			<div class="container">
 				<h5 class="text-xl font-semibold">⭐Reviews</h5>
-			</div>
 
-			<div class="grid gap-12 mt-5">
-				<div
-					v-for="(item, index) in reviewsState.data?.results.slice(
-						0,
-						maxShownReviews,
-					) as Array<ReviewT>"
-					class="flex flex-col gap-4 select-none"
-				>
-					<ul class="flex items-center gap-2 list-inside">
-						<li>
-							<Avatar>
-								<AvatarImage
-									:src="getImageUrl(item.author_details.avatar_path)"
-								/>
-								<AvatarFallback class="font-semibold uppercase">
-									{{ item.author.slice(0, 2) }}
-								</AvatarFallback>
-							</Avatar>
-						</li>
+				<div class="grid gap-12 mt-8">
+					<div
+						v-for="(item, index) in reviewsState.data?.results.slice(
+							0,
+							maxShownReviews,
+						) as Array<ReviewT>"
+						class="flex flex-col gap-4 select-none"
+					>
+						<ul class="flex items-center gap-2 list-inside">
+							<li>
+								<Avatar>
+									<AvatarImage
+										:src="
+											getImageUrl(item.author_details.avatar_path)
+										"
+									/>
+									<AvatarFallback class="font-semibold uppercase">
+										{{ item.author.slice(0, 2) }}
+									</AvatarFallback>
+								</Avatar>
+							</li>
 
-						<li>
-							{{ item.author }}
-						</li>
+							<li>
+								{{ item.author }}
+							</li>
 
-						<li class="text-xs list-disc text-muted-foreground">
-							{{ moment(item.created_at).fromNow() }}
-						</li>
-					</ul>
+							<li class="text-xs list-disc text-muted-foreground">
+								{{ moment(item.created_at).fromNow() }}
+							</li>
+						</ul>
 
-					<p class="text-sm">
-						{{
-							item.showFullContent
-								? item.content
-								: item.content.slice(0, reviewContentLength) +
-									(item.content.length > reviewContentLength
-										? "..."
-										: "")
-						}}
+						<p class="text-sm">
+							{{
+								item.showFullContent
+									? item.content
+									: item.content.slice(0, reviewContentLength) +
+										(item.content.length > reviewContentLength
+											? "..."
+											: "")
+							}}
 
-						<Button
-							v-if="item.content.length > reviewContentLength"
-							variant="link"
-							size="sm"
-							@click="toggleShowMore(index)"
-							:class="
-								cn('px-0', {
-									'pr-0 pl-2': item.showFullContent,
-								})
-							"
-						>
-							{{ item.showFullContent ? "See less" : "See more" }}
-						</Button>
-					</p>
+							<Button
+								v-if="item.content.length >= reviewContentLength"
+								variant="link"
+								size="sm"
+								@click="toggleShowMore(index)"
+								:class="
+									cn('px-0', {
+										'pr-0 pl-2': item.showFullContent,
+									})
+								"
+							>
+								{{ item.showFullContent ? "See less" : "See more" }}
+							</Button>
+						</p>
+					</div>
+
+					<Button
+						variant="outline"
+						v-if="reviewsState.data.results.length > maxShownReviews"
+						@click="toggleMaxShownReviews"
+						class="justify-self-center w-fit"
+					>
+						{{ maxShownReviews === 3 ? `Show More` : "Show Less" }}
+					</Button>
 				</div>
-
-				<Button
-					variant="outline"
-					@click="toggleMaxShownReviews"
-					class="justify-self-center w-fit"
-				>
-					{{ maxShownReviews === 3 ? `Show More` : "Show Less" }}
-				</Button>
 			</div>
 		</section>
 
 		<!-- Recommended -->
-		<div class="mt-12 border-t">
+		<div
+			v-if="recommendedState.data.results && recommendedState.data?.results.length"
+			class="mt-12 border-t"
+		>
 			<HorizontalCarousel
 				show-more
 				class="pt-12 pb-0"
@@ -225,10 +294,11 @@ const credit = computed(() => detailsState.data?.credit);
 						String(movieId),
 					)
 				"
-				head-title="Similar Movies For You"
+				head-title="Similar TV Shows For You"
 				card-presentation="LandscapeMovieCard"
 				:data="recommendedState.data"
 				:is-loading="recommendedState.isLoading"
+				video-type="tv"
 			/>
 		</div>
 	</main>

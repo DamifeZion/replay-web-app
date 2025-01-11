@@ -199,16 +199,14 @@ export const useVideoQuery = () => {
 
 			const res = await axios.get(ENDPOINT.GET_TV_SERIES, {});
 
-			tvSeriesState.data = {
-				...res.data,
-				response: res.data?.results.map(
+			tvSeriesState.data.results =
+				res.data?.results.map(
 					(item: any): MovieT => ({
 						...item,
 						title: item?.name,
 						original_title: item?.original_name,
 					}),
-				),
-			};
+				) || [];
 		} catch (err) {
 			console.error(err);
 			tvSeriesState.error = err;

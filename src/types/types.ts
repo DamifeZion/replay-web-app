@@ -158,6 +158,13 @@ export type MovieDetailsFetchState = Omit<AxiosFetchState, "data"> & {
 	};
 };
 
+export type TvDetailsFetchState = Omit<AxiosFetchState, "data"> & {
+	data?: {
+		tv: TvShowDetailsT;
+		credit: CreditT;
+	};
+};
+
 export type TvCreatedByT = {
 	id: number;
 	credit_id: string;
@@ -196,14 +203,15 @@ export type SpokenLanguagesT = {
 	iso_639_1: string;
 	name: string;
 };
-export type TvShowT = {
+export type TvShowDetailsT = {
 	adult: boolean;
 	backdrop_path: string;
 	created_by: Array<TvCreatedByT>;
 	episode_run_time: Array<number>;
 	first_air_date: string;
-	genres: GenreT;
+	genres: Array<GenreT>;
 	homepage: string;
+	id: number;
 	in_production: boolean;
 	languages: Array<string>;
 	last_air_date: string;
@@ -222,11 +230,24 @@ export type TvShowT = {
 		still_path: string;
 	};
 	name: string;
-	next_episode_to_air: string;
-	networks: TvNetworkT;
+	next_episode_to_air: {
+		id: number;
+		name: string;
+		overview: string;
+		vote_average: number;
+		vote_count: number;
+		air_date: string;
+		episode_number: number;
+		production_code: string;
+		runtime: number;
+		season_number: number;
+		show_id: number;
+		still_path: string;
+	};
+	networks: Array<TvNetworkT>;
 	number_of_episodes: number;
 	number_of_seasons: number;
-	origin_country: string;
+	origin_country: Array<string>;
 	origin_language: string;
 	origin_name: string;
 	overview: string;

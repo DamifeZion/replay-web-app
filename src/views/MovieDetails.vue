@@ -120,7 +120,7 @@ const credit = computed(() => detailsState.data?.credit);
 
 			<!-- Cast -->
 			<div>
-				<h5>Top Cast</h5>
+				<h5>Movie Cast</h5>
 
 				<Carousel v-slot="{ canScrollNext, canScrollPrev }" class="grid">
 					<CarouselContent>
@@ -141,76 +141,83 @@ const credit = computed(() => detailsState.data?.credit);
 		<!-- Reviews -->
 		<section
 			v-if="
-				reviewsState.data.results && reviewsState.data.results.length > 0
+				!reviewsState.isLoading &&
+				reviewsState.data.results &&
+				reviewsState.data.results.length > 0
 			"
-			class="container mt-8"
+			class="pt-8 mt-10 border-t"
 		>
-			<div class="flex items-center justify-between gap-4">
-				<h5 class="text-xl font-semibold">⭐Reviews</h5>
-			</div>
-
-			<div class="grid gap-12 mt-5">
-				<div
-					v-for="(item, index) in reviewsState.data?.results.slice(
-						0,
-						maxShownReviews,
-					) as Array<ReviewT>"
-					class="flex flex-col gap-4 select-none"
-				>
-					<ul class="flex items-center gap-2 list-inside">
-						<li>
-							<Avatar>
-								<AvatarImage
-									:src="getImageUrl(item.author_details.avatar_path)"
-								/>
-								<AvatarFallback class="font-semibold uppercase">
-									{{ item.author.slice(0, 2) }}
-								</AvatarFallback>
-							</Avatar>
-						</li>
-
-						<li>
-							{{ item.author }}
-						</li>
-
-						<li class="text-xs list-disc text-muted-foreground">
-							{{ moment(item.created_at).fromNow() }}
-						</li>
-					</ul>
-
-					<p class="text-sm">
-						{{
-							item.showFullContent
-								? item.content
-								: item.content.slice(0, reviewContentLength) +
-									(item.content.length > reviewContentLength
-										? "..."
-										: "")
-						}}
-
-						<Button
-							v-if="item.content.length > reviewContentLength"
-							variant="link"
-							size="sm"
-							@click="toggleShowMore(index)"
-							:class="
-								cn('px-0', {
-									'pr-0 pl-2': item.showFullContent,
-								})
-							"
-						>
-							{{ item.showFullContent ? "See less" : "See more" }}
-						</Button>
-					</p>
+			<div class="container">
+				<div class="flex items-center justify-between gap-4">
+					<h5 class="text-xl font-semibold">⭐Reviews</h5>
 				</div>
 
-				<Button
-					variant="outline"
-					@click="toggleMaxShownReviews"
-					class="justify-self-center w-fit"
-				>
-					{{ maxShownReviews === 3 ? `Show More` : "Show Less" }}
-				</Button>
+				<div class="grid gap-12 mt-8">
+					<div
+						v-for="(item, index) in reviewsState.data?.results.slice(
+							0,
+							maxShownReviews,
+						) as Array<ReviewT>"
+						class="flex flex-col gap-4 select-none"
+					>
+						<ul class="flex items-center gap-2 list-inside">
+							<li>
+								<Avatar>
+									<AvatarImage
+										:src="
+											getImageUrl(item.author_details.avatar_path)
+										"
+									/>
+									<AvatarFallback class="font-semibold uppercase">
+										{{ item.author.slice(0, 2) }}
+									</AvatarFallback>
+								</Avatar>
+							</li>
+
+							<li>
+								{{ item.author }}
+							</li>
+
+							<li class="text-xs list-disc text-muted-foreground">
+								{{ moment(item.created_at).fromNow() }}
+							</li>
+						</ul>
+
+						<p class="text-sm">
+							{{
+								item.showFullContent
+									? item.content
+									: item.content.slice(0, reviewContentLength) +
+										(item.content.length > reviewContentLength
+											? "..."
+											: "")
+							}}
+
+							<Button
+								v-if="item.content.length > reviewContentLength"
+								variant="link"
+								size="sm"
+								@click="toggleShowMore(index)"
+								:class="
+									cn('px-0', {
+										'pr-0 pl-2': item.showFullContent,
+									})
+								"
+							>
+								{{ item.showFullContent ? "See less" : "See more" }}
+							</Button>
+						</p>
+					</div>
+
+					<Button
+						variant="outline"
+						v-if="reviewsState.data.results.length > maxShownReviews"
+						@click="toggleMaxShownReviews"
+						class="justify-self-center w-fit"
+					>
+						{{ maxShownReviews === 3 ? `Show More` : "Show Less" }}
+					</Button>
+				</div>
 			</div>
 		</section>
 
