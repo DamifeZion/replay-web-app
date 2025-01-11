@@ -1,11 +1,12 @@
 <script lang="ts" setup>
 import Error from "@/components/Error.vue";
+import Loading from "@/components/Loading.vue";
 import PortraitMovieCard from "@/components/movie-card/PortraitMovieCard.vue";
 import { Button } from "@/components/ui/button";
 import { axios } from "@/plugins/axios";
 import { useSeeMoreStore } from "@/stores/see-more.store";
 import type { AxiosFetchState, MovieT } from "@/types/types";
-import { ChevronLeft, Loader, Loader2 } from "lucide-vue-next";
+import { ChevronLeft, Loader } from "lucide-vue-next";
 import { computed, onMounted, onUnmounted, reactive } from "vue";
 import { onBeforeRouteLeave, useRoute, useRouter } from "vue-router";
 
@@ -47,7 +48,7 @@ const fetchMovies = async () => {
 	}
 	try {
 		movies.isLoading = true;
-		// movies.error = "";
+		movies.error = "";
 
 		const res = await axios.get(endpoint.value, {
 			params: {
@@ -132,12 +133,7 @@ onUnmounted(() => {
 		/>
 
 		<!-- Initial Loading -->
-		<section
-			v-if="movies.isLoading && movies.data.results.length === 0"
-			class="flex items-center justify-center py-40"
-		>
-			<Loader2 class="animate-spin size-8" />
-		</section>
+		<Loading v-if="movies.isLoading && movies.data.results.length === 0" />
 
 		<!-- Main Content -->
 		<section v-else>

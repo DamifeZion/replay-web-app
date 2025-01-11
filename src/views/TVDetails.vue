@@ -1,6 +1,7 @@
 <script lang="ts" setup>
 import HorizontalCarousel from "@/components/carousel/HorizontalCarousel.vue";
 import CastCard from "@/components/CastCard.vue";
+import Error from "@/components/Error.vue";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
@@ -32,6 +33,9 @@ const {
 	detailsState,
 	recommendedState,
 	reviewsState,
+	getTvDetails,
+	getRecommendedVideos,
+	getReviews,
 
 	//Others
 	movieId,
@@ -45,10 +49,23 @@ const {
 const tv = computed(() => detailsState.data?.tv);
 const credit = computed(() => detailsState.data?.credit);
 
+const handleRetry = () => {
+	getTvDetails();
+	getRecommendedVideos();
+	getReviews();
+};
 </script>
 
 <template>
-	<main>
+	<!-- DEtails Error -->
+	<Error
+		v-if="detailsState.error"
+		error="You cant make this action"
+		@retry="handleRetry"
+		class="pt-64 pb-28"
+	/>
+
+	<main v-else>
 		<Skeleton
 			v-if="detailsState.isLoading"
 			class="w-full h-full aspect-video pt-40 pb-10 min-[460px]:pb-24 lg:py-20 lg:max-h-[720px]"
@@ -119,7 +136,7 @@ const credit = computed(() => detailsState.data?.credit);
 			class="container grid gap-10 [&_h5]:text-xl [&_h5]:font-semibold [&_h5]:leading-[2.5] [&_p]:text-muted-foreground"
 		>
 			<!-- Overview -->
-			<div v-if="tv?.overview">
+			<div v-if="!detailsState.isLoading && tv?.overview">
 				<h5>Story Line</h5>
 				<p>
 					{{ tv?.overview }}
@@ -159,9 +176,21 @@ const credit = computed(() => detailsState.data?.credit);
 					</Badge>
 				</div>
 
-				<ul class="grid gap-6 mt-6 list-inside lg:grid-cols-2">
+				<!-- Loading Seasons -->
+				<ul
+					v-if="detailsState.isLoading"
+					class="grid min-[499px]:grid-cols-2 pt-4 gap-6"
+				>
+					<Skeleton
+						v-for="index in 2"
+						:key="index"
+						class="rounded-[inherit] h-[220px] lg:h-[300px] rounded-md"
+					/>
+				</ul>
+
+				<ul v-else class="grid gap-6 mt-6 list-inside lg:grid-cols-2">
 					<li v-for="item in tv?.seasons" :key="item.id">
-						<Card class="flex h-full max-[499px]:flex-wrap gap-x-">
+						<Card class="flex h-full max-[499px]:flex-wrap">
 							<img
 								:src="getImageUrl(item.poster_path)"
 								class="flex-grow aspect-video min-[500px]:aspect-[11/16] min-[500px]:max-w-[150px] object-cover object-center rounded-[inherit]"
@@ -202,10 +231,20 @@ const credit = computed(() => detailsState.data?.credit);
 			</div>
 		</section>
 
+		<!-- Reviews Error -->
+		<Error
+			v-if="reviewsState.error"
+			:error="String(reviewsState.error)"
+			@retry="handleRetry"
+		/>
+
 		<!-- Reviews -->
 		<section
 			v-if="
-				reviewsState.data.results && reviewsState.data.results.length > 0
+				!reviewsState.error &&
+				!reviewsState.isLoading &&
+				reviewsState.data.results &&
+				reviewsState.data.results.length > 0
 			"
 			class="pt-8 mt-10 border-t"
 		>
@@ -281,9 +320,18 @@ const credit = computed(() => detailsState.data?.credit);
 			</div>
 		</section>
 
+		<!-- Recommended Error -->
+		<Error
+			v-if="recommendedState.error"
+			:error="String(recommendedState.error)"
+			@retry="handleRetry"
+		/>
+
 		<!-- Recommended -->
 		<div
 			v-if="
+				!recommendedState.error &&
+				!recommendedState.isLoading &&
 				recommendedState.data.results &&
 				recommendedState.data?.results.length
 			"

@@ -193,6 +193,9 @@ export const useTvDetails = () => {
 		detailsState,
 		recommendedState,
 		reviewsState,
+		getTvDetails,
+      getRecommendedVideos,
+      getReviews,
 
 		//Others
 		movieId,

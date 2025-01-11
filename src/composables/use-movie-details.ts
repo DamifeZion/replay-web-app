@@ -160,6 +160,10 @@ export const useMovieDetails = () => {
 		recommendedState,
 		reviewsState,
 
+		getMovieDetails,
+      getRecommendedVideos,
+      getReviews,
+
 		//Others
 		movieId,
 		isDesktop,

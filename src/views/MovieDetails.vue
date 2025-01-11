@@ -1,6 +1,7 @@
 <script lang="ts" setup>
 import HorizontalCarousel from "@/components/carousel/HorizontalCarousel.vue";
 import CastCard from "@/components/CastCard.vue";
+import Error from "@/components/Error.vue";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
@@ -26,6 +27,9 @@ const {
 	detailsState,
 	recommendedState,
 	reviewsState,
+	getMovieDetails,
+	getRecommendedVideos,
+	getReviews,
 
 	//Others
 	movieId,
@@ -38,10 +42,24 @@ const {
 
 const video = computed(() => detailsState.data?.movie);
 const credit = computed(() => detailsState.data?.credit);
+
+const handleRetry = () => {
+	getMovieDetails();
+	getRecommendedVideos();
+	getReviews();
+};
 </script>
 
 <template>
-	<main>
+	<!-- DEtails Error -->
+	<Error
+		v-if="detailsState.error"
+		error="You cant make this action"
+		@retry="handleRetry"
+		class="pt-64 pb-28"
+	/>
+
+	<main v-else>
 		<Skeleton
 			v-if="detailsState.isLoading"
 			class="w-full h-full aspect-video pt-40 pb-10 min-[460px]:pb-24 lg:py-20 lg:max-h-[720px]"
@@ -138,9 +156,17 @@ const credit = computed(() => detailsState.data?.credit);
 			</div>
 		</section>
 
+		<!-- Reviews Error -->
+		<Error
+			v-if="reviewsState.error"
+			:error="String(reviewsState.error)"
+			@retry="handleRetry"
+		/>
+
 		<!-- Reviews -->
 		<section
 			v-if="
+				!reviewsState.error &&
 				!reviewsState.isLoading &&
 				reviewsState.data.results &&
 				reviewsState.data.results.length > 0
@@ -221,8 +247,23 @@ const credit = computed(() => detailsState.data?.credit);
 			</div>
 		</section>
 
+		<!-- Recommended Error -->
+		<Error
+			v-if="recommendedState.error"
+			:error="String(recommendedState.error)"
+			@retry="handleRetry"
+		/>
+
 		<!-- Recommended -->
-		<div class="mt-12 border-t">
+		<div
+			class="mt-12 border-t"
+			v-if="
+				!recommendedState.error &&
+				!recommendedState.isLoading &&
+				recommendedState.data.results &&
+				recommendedState.data?.results.length
+			"
+		>
 			<HorizontalCarousel
 				show-more
 				class="pt-12 pb-0"
