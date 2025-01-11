@@ -60,7 +60,7 @@ const handleRetry = () => {
 	<!-- DEtails Error -->
 	<Error
 		v-if="detailsState.error"
-		error="You cant make this action"
+		:error="String(detailsState.error)"
 		@retry="handleRetry"
 		class="pt-64 pb-28"
 	/>
