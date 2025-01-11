@@ -17,4 +17,6 @@ export const ENDPOINT = {
 	GET_TV_CREDITS: "/tv/:movie_id/credits",
 	GET_RECOMMENDED_TV: "/tv/:movie_id/recommendations",
 	GET_TV_REVIEWS: "/tv/:movie_id/reviews",
+	GET_MOVIE_VIDEO: "/movie/:id/videos",
+	GET_TV_VIDEO: "/tv/:id/tv",
 };

@@ -15,22 +15,40 @@ import {
 	TooltipTrigger,
 } from "@/components/ui/tooltip";
 import { useRenderGenre } from "@/composables/shared/use-render-genre";
+import { routeConst } from "@/constants/route-const";
 import { getImageUrl } from "@/helper/tmdb-image";
 import { cn } from "@/lib/utils";
+import { usePlayVideoStore } from "@/stores/play-video.store";
 import type { FeaturedProps, MovieT } from "@/types/types";
 import { useMediaQuery } from "@vueuse/core";
 import moment from "moment";
 import { ref, watch } from "vue";
+import { useRouter } from "vue-router";
 
 const props = withDefaults(defineProps<FeaturedProps>(), {
 	movies: () => [],
 });
 
+const router = useRouter();
 const isDesktop = useMediaQuery("(min-width: 1024px)");
+const playVideoStore = usePlayVideoStore();
 const { renderGenre } = useRenderGenre();
 
 const activeMovie = ref<MovieT | undefined>();
 const showFullOverview = ref(false);
+
+// Watch Trailer Click
+const handlePlayNow = () => {
+	playVideoStore.setState({
+		id: activeMovie.value?.id,
+		title: activeMovie.value?.title || activeMovie.value?.original_title,
+		shouldPlay: true,
+	}); // Effective to auto play the video in the details page
+
+	router.push(
+		routeConst.movieDetails.replace(":id", String(activeMovie.value?.id)),
+	);
+};
 
 // Set the active movie on mount
 watch(
@@ -140,7 +158,7 @@ const setActiveMovie = (id: number) => {
 				</div>
 
 				<div class="flex items-center gap-2 mt-3">
-					<Button class="max-sm:text-xs">
+					<Button class="max-sm:text-xs" @click="handlePlayNow">
 						<i class="text-sm pi pi-play-circle sm:text-lg"></i>
 						Play Now
 					</Button>

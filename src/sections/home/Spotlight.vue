@@ -16,13 +16,18 @@ import { watchOnce } from "@vueuse/core";
 import moment from "moment";
 import { ref } from "vue";
 import Autoplay from "embla-carousel-autoplay";
+import { usePlayVideoStore } from "@/stores/play-video.store";
+import { routeConst } from "@/constants/route-const";
+import { useRouter } from "vue-router";
 
 /**Props definition */
 const props = withDefaults(defineProps<SpotlightProps>(), {
 	trendingVideos: () => [],
 });
 
+const router = useRouter();
 const { renderGenre } = useRenderGenre();
+const playVideoStore = usePlayVideoStore();
 
 // Pagination controls
 const emblaMainApi = ref<CarouselApi>();
@@ -48,6 +53,17 @@ watchOnce(emblaMainApi, (emblaMainApi) => {
 	emblaMainApi.on("select", onSelect);
 	emblaMainApi.on("reInit", onSelect);
 });
+
+// Watch Trailer Click
+const handlePlayNow = (id: number, title: string) => {
+	playVideoStore.setState({
+		id,
+		shouldPlay: true,
+		title,
+	}); // Effective to auto play the video in the details page
+
+	router.push(routeConst.movieDetails.replace(":id", String(id)));
+};
 </script>
 
 <template>
@@ -100,7 +116,15 @@ watchOnce(emblaMainApi, (emblaMainApi) => {
 						</p>
 
 						<div class="flex mt-6 gap-y-6 gap-x-4">
-							<Button class="max-sm:text-xs">
+							<Button
+								class="max-sm:text-xs"
+								@click="
+									handlePlayNow(
+										item.id,
+										item.title || item.original_title,
+									)
+								"
+							>
 								<i class="text-sm pi pi-play-circle sm:text-lg"></i>
 								Watch Trailer
 							</Button>

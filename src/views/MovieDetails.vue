@@ -13,6 +13,7 @@ import {
 	CarouselPrevious,
 } from "@/components/ui/carousel";
 import { Skeleton } from "@/components/ui/skeleton";
+import WatchVideo from "@/components/WatchVideo.vue";
 import { useMovieDetails } from "@/composables/use-movie-details";
 import { ENDPOINT } from "@/constants/endpoint-const";
 import { getImageUrl } from "@/helper/tmdb-image";
@@ -27,10 +28,7 @@ const {
 	detailsState,
 	recommendedState,
 	reviewsState,
-	getMovieDetails,
-	getRecommendedVideos,
-	getReviews,
-
+	
 	//Others
 	movieId,
 	isDesktop,
@@ -38,16 +36,14 @@ const {
 	toggleShowMore,
 	maxShownReviews,
 	toggleMaxShownReviews,
+	handleRetry,
+	handlePlayNow
 } = useMovieDetails();
 
 const video = computed(() => detailsState.data?.movie);
 const credit = computed(() => detailsState.data?.credit);
 
-const handleRetry = () => {
-	getMovieDetails();
-	getRecommendedVideos();
-	getReviews();
-};
+
 </script>
 
 <template>
@@ -100,7 +96,7 @@ const handleRetry = () => {
 					class="flex flex-wrap items-end justify-between gap-x-8 gap-y-4"
 				>
 					<div class="flex mt-6 gap-y-6 gap-x-4">
-						<Button class="max-sm:text-xs">
+						<Button class="max-sm:text-xs" @click="handlePlayNow">
 							<i class="text-sm pi pi-play-circle sm:text-lg"></i>
 							Watch Trailer
 						</Button>
@@ -129,7 +125,7 @@ const handleRetry = () => {
 			class="container grid gap-10 [&_h5]:text-xl [&_h5]:font-semibold [&_h5]:leading-[2.5] [&_p]:text-muted-foreground"
 		>
 			<!-- Overview -->
-			<div>
+			<div v-if="!detailsState.isLoading && video?.overview">
 				<h5>Story Line</h5>
 				<p>
 					{{ video?.overview }}
@@ -137,7 +133,7 @@ const handleRetry = () => {
 			</div>
 
 			<!-- Cast -->
-			<div>
+			<div v-if="credit?.cast.length">
 				<h5>Movie Cast</h5>
 
 				<Carousel v-slot="{ canScrollNext, canScrollPrev }" class="grid">
@@ -280,4 +276,7 @@ const handleRetry = () => {
 			/>
 		</div>
 	</main>
+
+	<!-- Watch Video Dialog -->
+	<WatchVideo v-if="!detailsState.isLoading || detailsState.error" />
 </template>

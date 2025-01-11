@@ -1,13 +1,13 @@
 import { useGenreStore } from "@/stores/genere.store";
-import type { GenreTypeT } from "@/types/types";
+import type { VideoTypeT } from "@/types/types";
 
 export const useRenderGenre = () => {
 	const genreStore = useGenreStore();
 
 	// Function to render the genre
-	const renderGenre = (genreID: number, type?: GenreTypeT): string => {
+	const renderGenre = (genreID: number, type?: VideoTypeT): string => {
 		let genre;
-		const defaultType: GenreTypeT = type || "movie";
+		const defaultType: VideoTypeT = type || "movie";
 
 		switch (defaultType) {
 			case "movie":

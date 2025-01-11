@@ -90,18 +90,18 @@ export type MovieCarousel = {
 	data: VideoDataResponse;
 	class?: string;
 	carouselItemClass?: string;
-	videoType?: GenreTypeT;
+	videoType?: VideoTypeT;
 };
 
 export type MovieCardProps = {
 	index: number;
 	movie: MovieT;
-	videoType: GenreTypeT;
+	videoType: VideoTypeT;
 	class?: string;
 	isLoading?: boolean;
 };
 
-export type GenreTypeT = "movie" | "tv";
+export type VideoTypeT = "movie" | "tv";
 
 export type URLQueryT = keyof typeof URLQueryConst;
 
@@ -267,4 +267,11 @@ export type TvShowDetailsT = {
 export type ErrorProps = {
 	error: string;
 	onRetry?: () => void;
+};
+
+export type PlayVideoStore = {
+	id: number;
+	title: string;
+	videoType: VideoTypeT;
+	shouldPlay: boolean;
 };

@@ -117,7 +117,7 @@ onUnmounted(() => {
 				@click="router.back"
 				class="size-6"
 			>
-				<ChevronLeft class="!size-5" />
+				<ChevronLeft class="!size-6" />
 			</Button>
 
 			<h3 class="text-2xl font-semibold">
