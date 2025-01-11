@@ -1,5 +1,7 @@
 import { ENDPOINT } from "@/constants/endpoint-const";
+import { routeConst } from "@/constants/route-const";
 import { axios } from "@/plugins/axios";
+import { useSeeMoreStore } from "@/stores/see-more.store";
 import type {
 	AxiosFetchState,
 	MovieDetailsFetchState,
@@ -7,10 +9,11 @@ import type {
 } from "@/types/types";
 import { useMediaQuery } from "@vueuse/core";
 import { watch, reactive, computed, ref } from "vue";
-import { useRoute } from "vue-router";
+import { onBeforeRouteLeave, useRoute } from "vue-router";
 
 export const useMovieDetails = () => {
 	const isDesktop = useMediaQuery("(min-width: 1024px)");
+	const seeMoreStore = useSeeMoreStore();
 	const route = useRoute();
 	const movieId = computed(() => route.params.id);
 
@@ -62,6 +65,33 @@ export const useMovieDetails = () => {
 			detailsState.isLoading = false;
 		}
 	};
+
+	// Persist the Video Title to use in See More
+	watch(
+		detailsState,
+		(newVal) => {
+			if (newVal) {
+				seeMoreStore.setTitle(
+					String(
+						newVal.data?.movie.title || newVal.data?.movie.original_title,
+					),
+				);
+			}
+		},
+		{
+			immediate: true,
+		},
+	);
+
+	// If the next route name is not see More, then remove the title set in the store.
+	onBeforeRouteLeave((to, from, next) => {
+		if (to.name !== routeConst.seeMoreVideos) {
+			seeMoreStore.setTitle("");
+		}
+
+		console.log("Leaving TV Details");
+		next();
+	});
 
 	const recommendedState = reactive<AxiosFetchState>({
 		data: [],
@@ -161,8 +191,8 @@ export const useMovieDetails = () => {
 		reviewsState,
 
 		getMovieDetails,
-      getRecommendedVideos,
-      getReviews,
+		getRecommendedVideos,
+		getReviews,
 
 		//Others
 		movieId,
