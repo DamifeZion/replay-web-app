@@ -44,6 +44,7 @@ const {
 
 const tv = computed(() => detailsState.data?.tv);
 const credit = computed(() => detailsState.data?.credit);
+
 </script>
 
 <template>
@@ -282,7 +283,10 @@ const credit = computed(() => detailsState.data?.credit);
 
 		<!-- Recommended -->
 		<div
-			v-if="recommendedState.data.results && recommendedState.data?.results.length"
+			v-if="
+				recommendedState.data.results &&
+				recommendedState.data?.results.length
+			"
 			class="mt-12 border-t"
 		>
 			<HorizontalCarousel

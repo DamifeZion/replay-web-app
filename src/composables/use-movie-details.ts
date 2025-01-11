@@ -55,8 +55,6 @@ export const useMovieDetails = () => {
 					})),
 				},
 			};
-
-			console.log(credits.data);
 		} catch (err) {
 			console.error(err);
 			detailsState.error = err;
@@ -84,6 +82,7 @@ export const useMovieDetails = () => {
 
 			recommendedState.data = res.data;
 		} catch (err) {
+			console.error(err);
 		} finally {
 			recommendedState.isLoading = false;
 		}
@@ -108,6 +107,7 @@ export const useMovieDetails = () => {
 
 			reviewsState.data = res.data;
 		} catch (err) {
+			console.error(err);
 		} finally {
 			reviewsState.isLoading = false;
 		}

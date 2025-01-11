@@ -1,4 +1,5 @@
 <script lang="ts" setup>
+import Error from "@/components/Error.vue";
 import PortraitMovieCard from "@/components/movie-card/PortraitMovieCard.vue";
 import { Button } from "@/components/ui/button";
 import { axios } from "@/plugins/axios";
@@ -6,7 +7,7 @@ import { useSeeMoreStore } from "@/stores/see-more.store";
 import type { AxiosFetchState, MovieT } from "@/types/types";
 import { ChevronLeft, Loader, Loader2 } from "lucide-vue-next";
 import { computed, onMounted, onUnmounted, reactive } from "vue";
-import { useRoute, useRouter } from "vue-router";
+import { onBeforeRouteLeave, useRoute, useRouter } from "vue-router";
 
 const seeMoreStore = useSeeMoreStore();
 const route = useRoute();
@@ -19,6 +20,13 @@ const pageTitle = seeMoreStore.title
 	? `Similar to ${seeMoreStore.title}`
 	: computed(() => decodedRoute.pageTitle);
 const videoType = computed(() => decodedRoute.videoType);
+
+console.log(videoType.value);
+// Reset the see more title in Store on page exit;
+onBeforeRouteLeave((to, from, next) => {
+	seeMoreStore.setTitle("");
+	next();
+});
 
 const movies = reactive<AxiosFetchState>({
 	data: {
@@ -39,7 +47,7 @@ const fetchMovies = async () => {
 	}
 	try {
 		movies.isLoading = true;
-		movies.error = "";
+		// movies.error = "";
 
 		const res = await axios.get(endpoint.value, {
 			params: {
@@ -66,7 +74,7 @@ const fetchMovies = async () => {
 		movies.data.total_results =
 			res.data?.total_results || movies.data.total_results;
 	} catch (err) {
-		movies.error = String(err);
+		movies.error = err;
 		console.error(err);
 	} finally {
 		movies.isLoading = false;
@@ -81,7 +89,9 @@ const handleScroll = () => {
 
 	// If user scrolls near the bottom, fetch more movies
 	if (scrollTop + clientHeight >= scrollHeight - 100) {
-		fetchMovies();
+		if (!movies.error) {
+			fetchMovies();
+		}
 	}
 };
 
@@ -99,10 +109,29 @@ onUnmounted(() => {
 
 <template>
 	<main class="container pt-10 mt-16">
-		<section v-if="movies.error" class="text-red-500">
-			<p>Error: {{ movies.error }}</p>
-		</section>
+		<div class="flex items-center gap-2 mb-4">
+			<Button
+				variant="secondary"
+				size="icon"
+				@click="router.back"
+				class="size-6"
+			>
+				<ChevronLeft class="!size-5" />
+			</Button>
 
+			<h3 class="text-2xl font-semibold">
+				{{ pageTitle }}
+			</h3>
+		</div>
+
+		<!-- Error -->
+		<Error
+			v-if="movies.error && !movies.isLoading"
+			:error="String(movies.error)"
+			@retry="fetchMovies"
+		/>
+
+		<!-- Initial Loading -->
 		<section
 			v-if="movies.isLoading && movies.data.results.length === 0"
 			class="flex items-center justify-center py-40"
@@ -110,22 +139,8 @@ onUnmounted(() => {
 			<Loader2 class="animate-spin size-8" />
 		</section>
 
+		<!-- Main Content -->
 		<section v-else>
-			<div class="flex items-center gap-2 mb-4">
-				<Button
-					variant="secondary"
-					size="icon"
-					@click="router.back"
-					class="size-6"
-				>
-					<ChevronLeft class="!size-5" />
-				</Button>
-
-				<h3 class="text-2xl font-semibold">
-					{{ pageTitle }}
-				</h3>
-			</div>
-
 			<div
 				class="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 gap-x-3 gap-y-4"
 			>
@@ -137,6 +152,7 @@ onUnmounted(() => {
 					:video-type="videoType"
 				/>
 
+				<!-- Subsequent Loading -->
 				<Loader
 					v-if="movies.isLoading"
 					class="mx-auto my-4 col-span-full animate-spin size-8"

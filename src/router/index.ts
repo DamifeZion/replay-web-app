@@ -26,7 +26,7 @@ const router = createRouter({
 		},
 		{
 			path: routeConst.seeMoreVideos,
-			name: "more videos",
+			name: routeConst.seeMoreVideos,
 			component: () => import("../views/SeeMoreVideos.vue"),
 		},
 	],

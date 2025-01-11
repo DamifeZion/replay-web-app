@@ -263,3 +263,8 @@ export type TvShowDetailsT = {
 	vote_average: number;
 	vote_count: number;
 };
+
+export type ErrorProps = {
+	error: string;
+	onRetry?: () => void;
+};

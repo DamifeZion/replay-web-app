@@ -34,7 +34,9 @@ const { renderGenre } = useRenderGenre();
 </script>
 
 <template>
-	<RouterLink :to="videoDetailsRoute">
+	<RouterLink
+		:to="videoDetailsRoute"
+	>
 		<Card class="overflow-hidden rounded-md">
 			<CardContent
 				:style="{

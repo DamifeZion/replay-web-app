@@ -28,9 +28,12 @@ const axiosInstance = (baseUrl?: string) => {
 			return response;
 		},
 		(error) => {
+			const newError =
+				error.response.data.status_message ||
+				"An unknown error occured. Please try again.";
 			// Handle errors globally
-			console.error("Response error:", error.response || error.message);
-			return Promise.reject(error);
+			console.error("Response error:", newError || error.response);
+			return Promise.reject(newError);
 		},
 	);
 
