@@ -25,14 +25,16 @@ const props = withDefaults(defineProps<MovieCardProps>(), {
 		}) as MovieT,
 });
 const movieProps = props.movie;
+const videoDetailsRoute =
+	props.videoType === "movie"
+		? routeConst.movieDetails.replace(":id", String(props.movie.id))
+		: routeConst.tvDetails.replace(":id", String(props.movie.id));
 
 const { renderGenre } = useRenderGenre();
 </script>
 
 <template>
-	<RouterLink
-		:to="routeConst.movieDetails.replace(':id', String(props.movie.id))"
-	>
+	<RouterLink :to="videoDetailsRoute">
 		<Card class="overflow-hidden rounded-md">
 			<CardContent
 				:style="{

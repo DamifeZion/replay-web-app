@@ -71,7 +71,7 @@ export const useMovieDetails = () => {
 		error: "",
 		isLoading: false,
 	});
-	const getRecommendedMovies = async () => {
+	const getRecommendedVideos = async () => {
 		try {
 			recommendedState.isLoading = false;
 			recommendedState.error = "";
@@ -119,7 +119,7 @@ export const useMovieDetails = () => {
 		(newMovieId, oldMovieId) => {
 			if (newMovieId !== oldMovieId) {
 				getMovieDetails();
-				getRecommendedMovies();
+				getRecommendedVideos();
 				getReviews();
 			}
 		},

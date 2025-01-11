@@ -12,7 +12,7 @@ import {
 	CarouselPrevious,
 } from "@/components/ui/carousel";
 import { Skeleton } from "@/components/ui/skeleton";
-import { useMovieDetails } from "@/composables/shared/use-movie-details";
+import { useTvDetails } from "@/composables/use-tv-details";
 import { ENDPOINT } from "@/constants/endpoint-const";
 import { getImageUrl } from "@/helper/tmdb-image";
 import { cn } from "@/lib/utils";
@@ -34,7 +34,7 @@ const {
 	toggleShowMore,
 	maxShownReviews,
 	toggleMaxShownReviews,
-} = useMovieDetails();
+} = useTvDetails();
 
 const tv = computed(() => detailsState.data?.movie);
 const credit = computed(() => detailsState.data?.credit);
@@ -61,7 +61,7 @@ const credit = computed(() => detailsState.data?.credit);
 
 			<!-- Hero Content Overlay -->
 			<div class="container select-none">
-				<Badge> Movie </Badge>
+				<Badge> TV Show </Badge>
 
 				<h2 class="max-w-lg mt-6 text-4xl font-semibold lg:text-5xl">
 					{{ tv?.title }}
@@ -140,7 +140,9 @@ const credit = computed(() => detailsState.data?.credit);
 
 		<!-- Reviews -->
 		<section
-			v-if="reviewsState.data.results.length > 0"
+			v-if="
+				reviewsState.data.results && reviewsState.data.results.length > 0
+			"
 			class="container mt-8"
 		>
 			<div class="flex items-center justify-between gap-4">

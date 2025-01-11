@@ -13,4 +13,8 @@ export const ENDPOINT = {
 	GET_MOVIE_CREDITS: "/movie/:movie_id/credits",
 	GET_RECOMMENDED_MOVIE: "/movie/:movie_id/recommendations",
 	GET_MOVIE_REVIEWS: "/movie/:movie_id/reviews",
+	GET_TV_DETAILS: "/tv/:movie_id",
+	GET_TV_CREDITS: "/tv/:movie_id/credits",
+	GET_RECOMMENDED_TV: "/tv/:movie_id/recommendations",
+	GET_TV_REVIEWS: "/tv/:movie_id/reviews",
 };

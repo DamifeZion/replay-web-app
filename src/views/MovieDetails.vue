@@ -12,7 +12,7 @@ import {
 	CarouselPrevious,
 } from "@/components/ui/carousel";
 import { Skeleton } from "@/components/ui/skeleton";
-import { useMovieDetails } from "@/composables/shared/use-movie-details";
+import { useMovieDetails } from "@/composables/use-movie-details";
 import { ENDPOINT } from "@/constants/endpoint-const";
 import { getImageUrl } from "@/helper/tmdb-image";
 import { cn } from "@/lib/utils";
@@ -140,7 +140,9 @@ const credit = computed(() => detailsState.data?.credit);
 
 		<!-- Reviews -->
 		<section
-			v-if="reviewsState.data.results.length > 0"
+			v-if="
+				reviewsState.data.results && reviewsState.data.results.length > 0
+			"
 			class="container mt-8"
 		>
 			<div class="flex items-center justify-between gap-4">

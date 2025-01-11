@@ -27,6 +27,10 @@ const props = withDefaults(defineProps<MovieCardProps>(), {
 		}) as MovieT,
 });
 const movieProps = props.movie;
+const videoDetailsRoute =
+	props.videoType === "movie"
+		? routeConst.movieDetails.replace(":id", String(props.movie.id))
+		: routeConst.tvDetails.replace(":id", String(props.movie.id));
 
 const { renderGenre } = useRenderGenre();
 const isXsScreen = useMediaQuery("(max-width: 250px)");
@@ -35,9 +39,7 @@ const visibleGenresCount = computed(() => (isXsScreen.value ? 1 : 2));
 </script>
 
 <template>
-	<RouterLink
-		:to="routeConst.movieDetails.replace(':id', String(props.movie.id))"
-	>
+	<RouterLink :to="videoDetailsRoute">
 		<div
 			class="grid grid-cols-[auto_1fr] max-h-[150px] items-center gap-3 select-none"
 		>
