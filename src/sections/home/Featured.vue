@@ -9,15 +9,11 @@ import {
 } from "@/components/ui/carousel";
 import CarouselContent from "@/components/ui/carousel/CarouselContent.vue";
 import { Skeleton } from "@/components/ui/skeleton";
-import {
-	Tooltip,
-	TooltipContent,
-	TooltipTrigger,
-} from "@/components/ui/tooltip";
 import { useRenderGenre } from "@/composables/shared/use-render-genre";
 import { routeConst } from "@/constants/route-const";
 import { getImageUrl } from "@/helper/tmdb-image";
 import { cn } from "@/lib/utils";
+import { useFavouriteStore } from "@/stores/favourite.store.ts";
 import { usePlayVideoStore } from "@/stores/play-video.store";
 import type { FeaturedProps, MovieT } from "@/types/types";
 import { useMediaQuery } from "@vueuse/core";
@@ -32,6 +28,7 @@ const props = withDefaults(defineProps<FeaturedProps>(), {
 const router = useRouter();
 const isDesktop = useMediaQuery("(min-width: 1024px)");
 const playVideoStore = usePlayVideoStore();
+const favouriteStore = useFavouriteStore();
 const { renderGenre } = useRenderGenre();
 
 const activeMovie = ref<MovieT | undefined>();
@@ -163,9 +160,20 @@ const setActiveMovie = (id: number) => {
 						Play Now
 					</Button>
 
-					<Button variant="secondary" class="max-sm:text-xs">
-						<i class="text-sm pi pi-bookmark sm:text-lg"></i> Add
-						Watchlist
+					<Button
+						variant="secondary"
+						class="max-sm:text-xs"
+						@click="favouriteStore.setFavourite(activeMovie as MovieT)"
+					>
+						<i
+							:class="`text-sm pi sm:text-lg ${favouriteStore.isFavourite(Number(activeMovie?.id)) ? 'pi-bookmark-fill' : 'pi-bookmark'}`"
+						></i>
+
+						{{
+							favouriteStore.isFavourite(Number(activeMovie?.id))
+								? "Remove from Watchlist"
+								: "Add to Watchlist"
+						}}
 					</Button>
 				</div>
 			</div>

@@ -275,3 +275,20 @@ export type PlayVideoStore = {
 	videoType: VideoTypeT;
 	shouldPlay: boolean;
 };
+
+export type VideoT = {
+	id: string;
+	iso_639_1: string;
+	iso_3166_1: string;
+	name: string;
+	key: string;
+	site: string;
+	size: number;
+	type: "trailer" | "behind the scenes";
+	offiial: boolean;
+	published_at: string;
+};
+
+export type FavouriteStoreT = {
+	favVideos: Array<MovieT> | []
+}

@@ -93,11 +93,7 @@ export const useMovieDetails = () => {
 		}
 
 		// Clear the current playing
-		playVideoStore.setState({
-			id: 0,
-			title: "",
-			shouldPlay: false,
-		});
+		playVideoStore.resetState();
 		next();
 	});
 

@@ -4,10 +4,9 @@ export const routeConst = {
 	tvDetails: "/home/tv/:id",
 	tvSeasonDetails: "home/tv/:id/season/:season",
 	seeMoreVideos: "/see-more/:encrypted_endpoint",
-	discover: "/discover",
-	movieRelease: "/movie-release",
-	forum: "/forum",
-	about: "/about",
+	discover: "#discover",
+	movieRelease: "#movie-release",
+	favourite: "/favourite",
 	signup: "/auth/signup",
 	login: "/auth/login",
 };

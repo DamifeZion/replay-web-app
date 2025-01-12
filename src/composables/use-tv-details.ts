@@ -1,6 +1,7 @@
 import { ENDPOINT } from "@/constants/endpoint-const";
 import { routeConst } from "@/constants/route-const";
 import { axios } from "@/plugins/axios";
+import { usePlayVideoStore } from "@/stores/play-video.store";
 import { useSeeMoreStore } from "@/stores/see-more.store";
 import type {
 	AxiosFetchState,
@@ -15,6 +16,8 @@ import { onBeforeRouteLeave, useRoute } from "vue-router";
 export const useTvDetails = () => {
 	const isDesktop = useMediaQuery("(min-width: 1024px)");
 	const seeMoreStore = useSeeMoreStore();
+	const playVideoStore = usePlayVideoStore();
+
 	const route = useRoute();
 	const movieId = computed(() => route.params.id);
 
@@ -88,7 +91,7 @@ export const useTvDetails = () => {
 			seeMoreStore.setTitle("");
 		}
 
-		console.log("Leaving TV Details");
+		playVideoStore.resetState();
 		next();
 	});
 
@@ -188,14 +191,26 @@ export const useTvDetails = () => {
 		maxShownReviews.value = value;
 	};
 
+	const handleRetry = () => {
+		getTvDetails();
+		getRecommendedVideos();
+		getReviews();
+	};
+
+	const handlePlayNow = () => {
+		playVideoStore.setState({
+			id: detailsState.data?.tv.id,
+			title: detailsState.data?.tv.name || detailsState.data?.tv.origin_name,
+			shouldPlay: true,
+			videoType: "tv",
+		});
+	};
+
 	return {
 		// API Data
 		detailsState,
 		recommendedState,
 		reviewsState,
-		getTvDetails,
-      getRecommendedVideos,
-      getReviews,
 
 		//Others
 		movieId,
@@ -204,5 +219,7 @@ export const useTvDetails = () => {
 		toggleShowMore,
 		maxShownReviews,
 		toggleMaxShownReviews,
+		handleRetry,
+		handlePlayNow,
 	};
 };

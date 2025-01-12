@@ -18,7 +18,8 @@ import { useMovieDetails } from "@/composables/use-movie-details";
 import { ENDPOINT } from "@/constants/endpoint-const";
 import { getImageUrl } from "@/helper/tmdb-image";
 import { cn } from "@/lib/utils";
-import type { ReviewT } from "@/types/types";
+import { useFavouriteStore } from "@/stores/favourite.store.ts";
+import type { GenreT, MovieT, ReviewT } from "@/types/types";
 import { Download, Share2 } from "lucide-vue-next";
 import moment from "moment";
 import { computed } from "vue";
@@ -28,7 +29,7 @@ const {
 	detailsState,
 	recommendedState,
 	reviewsState,
-	
+
 	//Others
 	movieId,
 	isDesktop,
@@ -37,13 +38,12 @@ const {
 	maxShownReviews,
 	toggleMaxShownReviews,
 	handleRetry,
-	handlePlayNow
+	handlePlayNow,
 } = useMovieDetails();
 
+const favouriteStore = useFavouriteStore();
 const video = computed(() => detailsState.data?.movie);
 const credit = computed(() => detailsState.data?.credit);
-
-
 </script>
 
 <template>
@@ -101,16 +101,34 @@ const credit = computed(() => detailsState.data?.credit);
 							Watch Trailer
 						</Button>
 
-						<Button variant="secondary" class="max-sm:text-xs">
-							<i class="text-sm pi pi-bookmark sm:text-lg"></i> Add
-							Watchlist
+						<Button
+							variant="secondary"
+							class="max-sm:text-xs"
+							@click="
+								favouriteStore.setFavourite({
+									...video,
+									genre_ids: video?.genres.map(
+										(item: GenreT) => item.id,
+									) as Array<number>,
+								} as MovieT)
+							"
+						>
+							<i
+								:class="`text-sm pi sm:text-lg ${favouriteStore.isFavourite(Number(video?.id)) ? 'pi-bookmark-fill' : 'pi-bookmark'}`"
+							></i>
+
+							{{
+								favouriteStore.isFavourite(Number(video?.id))
+									? "Remove from Watchlist"
+									: "Add to Watchlist"
+							}}
 						</Button>
 					</div>
 
 					<div class="flex items-center gap-2">
-						<Button size="sm" variant="outline">
+						<!-- <Button size="sm" variant="outline">
 							<Download /> Download
-						</Button>
+						</Button> -->
 
 						<Button size="sm" variant="outline">
 							<Share2 /> Share

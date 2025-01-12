@@ -19,6 +19,7 @@ import Autoplay from "embla-carousel-autoplay";
 import { usePlayVideoStore } from "@/stores/play-video.store";
 import { routeConst } from "@/constants/route-const";
 import { useRouter } from "vue-router";
+import { useFavouriteStore } from "@/stores/favourite.store.ts";
 
 /**Props definition */
 const props = withDefaults(defineProps<SpotlightProps>(), {
@@ -28,6 +29,7 @@ const props = withDefaults(defineProps<SpotlightProps>(), {
 const router = useRouter();
 const { renderGenre } = useRenderGenre();
 const playVideoStore = usePlayVideoStore();
+const favouriteStore = useFavouriteStore();
 
 // Pagination controls
 const emblaMainApi = ref<CarouselApi>();
@@ -129,9 +131,20 @@ const handlePlayNow = (id: number, title: string) => {
 								Watch Trailer
 							</Button>
 
-							<Button variant="secondary" class="max-sm:text-xs">
-								<i class="text-sm pi pi-bookmark sm:text-lg"></i> Add
-								Watchlist
+							<Button
+								variant="secondary"
+								class="max-sm:text-xs"
+								@click="favouriteStore.setFavourite(item)"
+							>
+								<i
+									:class="`text-sm pi sm:text-lg ${favouriteStore.isFavourite(Number(item?.id)) ? 'pi-bookmark-fill' : 'pi-bookmark'}`"
+								></i>
+
+								{{
+									favouriteStore.isFavourite(Number(item?.id))
+										? "Remove from Watchlist"
+										: "Add to Watchlist"
+								}}
 							</Button>
 						</div>
 					</div>

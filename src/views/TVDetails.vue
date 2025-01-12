@@ -19,11 +19,13 @@ import {
 	CarouselPrevious,
 } from "@/components/ui/carousel";
 import { Skeleton } from "@/components/ui/skeleton";
+import WatchVideo from "@/components/WatchVideo.vue";
 import { useTvDetails } from "@/composables/use-tv-details";
 import { ENDPOINT } from "@/constants/endpoint-const";
 import { getImageUrl } from "@/helper/tmdb-image";
 import { cn } from "@/lib/utils";
-import type { ReviewT } from "@/types/types";
+import { useFavouriteStore } from "@/stores/favourite.store.ts";
+import type { MovieT, ReviewT } from "@/types/types";
 import { Download, Share2 } from "lucide-vue-next";
 import moment from "moment";
 import { computed } from "vue";
@@ -33,9 +35,6 @@ const {
 	detailsState,
 	recommendedState,
 	reviewsState,
-	getTvDetails,
-	getRecommendedVideos,
-	getReviews,
 
 	//Others
 	movieId,
@@ -44,15 +43,25 @@ const {
 	toggleShowMore,
 	maxShownReviews,
 	toggleMaxShownReviews,
+	handleRetry,
+	handlePlayNow,
 } = useTvDetails();
+
+const favouriteStore = useFavouriteStore();
 
 const tv = computed(() => detailsState.data?.tv);
 const credit = computed(() => detailsState.data?.credit);
 
-const handleRetry = () => {
-	getTvDetails();
-	getRecommendedVideos();
-	getReviews();
+// Add/remove from favorites
+const toggleFavourite = () => {
+	favouriteStore.setFavourite({
+		...tv.value,
+		genre_ids: tv.value?.genres.map((item) => item.id) as Array<number>,
+		original_title: String(tv.value?.origin_name),
+		release_date: String(tv.value?.first_air_date),
+		title: String(tv.value?.name),
+		video: false,
+	} as MovieT);
 };
 </script>
 
@@ -107,21 +116,32 @@ const handleRetry = () => {
 					class="flex flex-wrap items-end justify-between gap-x-8 gap-y-4"
 				>
 					<div class="flex mt-6 gap-y-6 gap-x-4">
-						<Button class="max-sm:text-xs">
+						<Button class="max-sm:text-xs" @click="handlePlayNow">
 							<i class="text-sm pi pi-play-circle sm:text-lg"></i>
 							Watch Trailer
 						</Button>
 
-						<Button variant="secondary" class="max-sm:text-xs">
-							<i class="text-sm pi pi-bookmark sm:text-lg"></i> Add
-							Watchlist
+						<Button
+							variant="secondary"
+							class="max-sm:text-xs"
+							@click="toggleFavourite"
+						>
+							<i
+								:class="`text-sm pi sm:text-lg ${favouriteStore.isFavourite(Number(tv?.id)) ? 'pi-bookmark-fill' : 'pi-bookmark'}`"
+							></i>
+
+							{{
+								favouriteStore.isFavourite(Number(tv?.id))
+									? "Remove from Watchlist"
+									: "Add to Watchlist"
+							}}
 						</Button>
 					</div>
 
 					<div class="flex items-center gap-2">
-						<Button size="sm" variant="outline">
+						<!-- <Button size="sm" variant="outline">
 							<Download /> Download
-						</Button>
+						</Button> -->
 
 						<Button size="sm" variant="outline">
 							<Share2 /> Share
@@ -354,4 +374,7 @@ const handleRetry = () => {
 			/>
 		</div>
 	</main>
+
+	<!-- Watch Video Dialog -->
+	<WatchVideo v-if="!detailsState.isLoading || detailsState.error" />
 </template>

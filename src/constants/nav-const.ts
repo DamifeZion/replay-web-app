@@ -19,13 +19,8 @@ export const navConst: NavConstI = {
 			isBtn: false,
 		},
 		{
-			label: "Forum",
-			route: routeConst.forum,
-			isBtn: false,
-		},
-		{
-			label: "About",
-			route: routeConst.about,
+			label: "Favourites",
+			route: routeConst.favourite,
 			isBtn: false,
 		},
 		{
