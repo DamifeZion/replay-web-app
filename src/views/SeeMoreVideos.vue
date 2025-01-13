@@ -22,7 +22,6 @@ const pageTitle = seeMoreStore.title
 	: computed(() => decodedRoute.pageTitle);
 const videoType = computed(() => decodedRoute.videoType);
 
-console.log(videoType.value);
 // Reset the see more title in Store on page exit;
 onBeforeRouteLeave((to, from, next) => {
 	seeMoreStore.setTitle("");
@@ -136,24 +135,23 @@ onUnmounted(() => {
 		<Loading v-if="movies.isLoading && movies.data.results.length === 0" />
 
 		<!-- Main Content -->
-		<section v-else>
-			<div
-				class="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 gap-x-3 gap-y-4"
-			>
-				<PortraitMovieCard
-					v-for="(movie, index) in movies.data.results as Array<MovieT>"
-					:movie="movie as MovieT"
-					:index="index"
-					:key="movie?.id"
-					:video-type="videoType"
-				/>
+		<section
+			v-else
+			class="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 gap-x-3 gap-y-4"
+		>
+			<PortraitMovieCard
+				v-for="(movie, index) in movies.data.results as Array<MovieT>"
+				:movie="movie as MovieT"
+				:index="index"
+				:key="movie?.id"
+				:video-type="videoType"
+			/>
 
-				<!-- Subsequent Loading -->
-				<Loader
-					v-if="movies.isLoading"
-					class="mx-auto my-4 col-span-full animate-spin size-8"
-				/>
-			</div>
+			<!-- Subsequent Loading -->
+			<Loader
+				v-if="movies.isLoading && movies.data.results.length > 0"
+				class="mx-auto my-4 col-span-full animate-spin size-8"
+			/>
 		</section>
 	</main>
 </template>

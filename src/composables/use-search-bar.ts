@@ -4,7 +4,7 @@ import { useURLQuery } from "./shared/use-url-query";
 import { useRouter } from "vue-router";
 import { routeConst } from "@/constants/route-const";
 
-export const useSearch = () => {
+export const useSearchBar = () => {
 	const { getQuery, deleteQuery } = useURLQuery();
 
 	const router = useRouter();
