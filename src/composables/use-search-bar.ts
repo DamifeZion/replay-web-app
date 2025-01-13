@@ -1,10 +1,13 @@
 import { useSearchStore } from "@/stores/search.store";
 import { watchEffect } from "vue";
 import { useURLQuery } from "./shared/use-url-query";
+import { useRouter } from "vue-router";
+import { routeConst } from "@/constants/route-const";
 
 export const useSearch = () => {
-	const { appendQuery, getQuery, deleteQuery } = useURLQuery();
+	const { getQuery, deleteQuery } = useURLQuery();
 
+	const router = useRouter();
 	const q = getQuery("search");
 	const searchStore = useSearchStore();
 
@@ -17,18 +20,25 @@ export const useSearch = () => {
 
 	const handleSearchClick = () => {
 		if (searchStore.searchValue) {
-			return appendQuery({ q: searchStore.searchValue });
+			router.push({
+				path: routeConst.search,
+				query: {
+					q: searchStore.searchValue,
+				},
+			});
 		}
 
-		return searchStore.toggleShowSearch();
+		searchStore.toggleShowSearch();
 	};
 
 	const handleInputBlur = () => {
 		if (!searchStore.searchValue) {
 			searchStore.showSearch = false;
-			deleteQuery("q");
+			deleteQuery("search");
 		}
 	};
+
+
 
 	return {
 		searchStore,

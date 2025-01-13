@@ -25,9 +25,19 @@ const router = createRouter({
 			component: () => import("../views/TVDetails.vue"),
 		},
 		{
+			path: routeConst.favourite,
+			name: "favourites",
+			component: () => import("../views/Favourite.vue"),
+		},
+		{
 			path: routeConst.seeMoreVideos,
 			name: routeConst.seeMoreVideos,
 			component: () => import("../views/SeeMoreVideos.vue"),
+		},
+		{
+			path: routeConst.search,
+			name: "search",
+			component: () => import("../views/Search.vue"),
 		},
 	],
 	scrollBehavior(to, from, savedPosition) {

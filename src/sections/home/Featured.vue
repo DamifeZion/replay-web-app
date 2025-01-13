@@ -163,7 +163,12 @@ const setActiveMovie = (id: number) => {
 					<Button
 						variant="secondary"
 						class="max-sm:text-xs"
-						@click="favouriteStore.setFavourite(activeMovie as MovieT)"
+						@click="
+							favouriteStore.setFavourite({
+								...activeMovie,
+								type: 'movie',
+							} as MovieT)
+						"
 					>
 						<i
 							:class="`text-sm pi sm:text-lg ${favouriteStore.isFavourite(Number(activeMovie?.id)) ? 'pi-bookmark-fill' : 'pi-bookmark'}`"

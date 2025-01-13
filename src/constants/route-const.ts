@@ -7,6 +7,7 @@ export const routeConst = {
 	discover: "#discover",
 	movieRelease: "#movie-release",
 	favourite: "/favourite",
-	signup: "/auth/signup",
-	login: "/auth/login",
+	signup: "#/auth/signup",
+	login: "#/auth/login",
+	search: "/search",
 };

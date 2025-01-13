@@ -29,7 +29,7 @@ export const useURLQuery = () => {
 		router.push({ query: updatedQuery });
 	};
 
-	const deleteQuery = (key: string) => {
+	const deleteQuery = (key: URLQueryT) => {
 		const updatedQuery = { ...route.query };
 
 		// Delete the key from the new query object

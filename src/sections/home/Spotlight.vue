@@ -134,7 +134,12 @@ const handlePlayNow = (id: number, title: string) => {
 							<Button
 								variant="secondary"
 								class="max-sm:text-xs"
-								@click="favouriteStore.setFavourite(item)"
+								@click="
+									favouriteStore.setFavourite({
+										...item,
+										type: 'movie',
+									})
+								"
 							>
 								<i
 									:class="`text-sm pi sm:text-lg ${favouriteStore.isFavourite(Number(item?.id)) ? 'pi-bookmark-fill' : 'pi-bookmark'}`"

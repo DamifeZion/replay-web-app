@@ -110,6 +110,7 @@ const credit = computed(() => detailsState.data?.credit);
 									genre_ids: video?.genres.map(
 										(item: GenreT) => item.id,
 									) as Array<number>,
+									type: 'movie',
 								} as MovieT)
 							"
 						>

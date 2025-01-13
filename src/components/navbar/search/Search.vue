@@ -1,12 +1,15 @@
 <script lang="ts" setup>
 import Button from "@/components//ui/button/Button.vue";
 import Input from "@/components/ui/input/Input.vue";
-import { useSearch } from "@/composables/use-search";
+import { useSearch } from "@/composables/use-search-bar";
 import { cn } from "@/lib/utils";
 import { useMediaQuery } from "@vueuse/core";
+import { computed } from "vue";
 
 const isMobile = useMediaQuery("(max-width: 1023px)");
 const { handleSearchClick, searchStore, handleInputBlur } = useSearch();
+
+const searchValue = computed(() => searchStore.searchValue);
 </script>
 
 <template>

@@ -61,6 +61,7 @@ const toggleFavourite = () => {
 		release_date: String(tv.value?.first_air_date),
 		title: String(tv.value?.name),
 		video: false,
+		type: "tv",
 	} as MovieT);
 };
 </script>
