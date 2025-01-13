@@ -125,5 +125,6 @@ export const useSearch = () => {
 		router,
 		searchResult,
 		getSearchResult,
+		q
 	};
 };

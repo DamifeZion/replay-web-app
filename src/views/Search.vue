@@ -7,7 +7,7 @@ import { useSearch } from "@/composables/use-search";
 import type { MovieT, VideoTypeT } from "@/types/types";
 import { ChevronLeft, Loader } from "lucide-vue-next";
 
-const { router, searchResult, getSearchResult } = useSearch();
+const { router, searchResult, getSearchResult, q } = useSearch();
 </script>
 
 <template>
@@ -37,21 +37,35 @@ const { router, searchResult, getSearchResult } = useSearch();
 
 		<!-- Initial Loading -->
 		<Loading
-			v-if="searchResult.isLoading && searchResult.data.results.length === 0"
+			v-else-if="
+				searchResult.isLoading && searchResult.data.results.length === 0
+			"
 			class="pb-20 pt-[230px]"
 		/>
 
 		<!-- Main Content -->
 		<section
+			v-else
 			class="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 gap-x-3 gap-y-4"
 		>
 			<PortraitMovieCard
+				v-if="searchResult.data.results.length > 0"
 				v-for="(movie, index) in searchResult.data.results as Array<MovieT>"
 				:movie="movie as MovieT"
 				:index="index"
 				:key="movie?.id"
 				video-type="movie"
 			/>
+
+			<!--No Result Found -->
+			<div
+				v-else
+				class="max-w-md py-16 mx-auto text-2xl text-center col-span-full text-muted-foreground"
+			>
+				<h4>
+					😓 No results found for: <b>{{ q }}</b>
+				</h4>
+			</div>
 
 			<!-- Subsequent Loading -->
 			<Loader
